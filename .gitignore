@@ -13,6 +13,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+nli_env
 .Python
 env/
 build/

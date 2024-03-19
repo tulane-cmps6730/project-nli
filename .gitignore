@@ -31,8 +31,9 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+
 #NEED TO FIX EVENTUALLY
-/Users/petersapountzis/Desktop/tulane/spring2024/cmps4730/project-nli/data/mnli_data
+data/mnli_data
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

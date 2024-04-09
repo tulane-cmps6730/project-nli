@@ -22,7 +22,7 @@ def index():
 		pred = clf.predict(X)[0]
 		proba = clf.predict_proba(X)[0].max()
 		# flash(input_field)
-		return render_template('myform.html', title='', form=form, 
+		return render_template('myform.html', title='Interactive NLI Classifier', form=form, 
 								prediction=labels[pred], confidence='%.2f' % proba)
 		#return redirect('/index')
-	return render_template('myform.html', title='', form=form, prediction=None, confidence=None)
+	return render_template('myform.html', title='Interactive NLI Classifier', form=form, prediction=None, confidence=None)

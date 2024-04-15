@@ -1,10 +1,8 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
 <b>Interactive NLI classifier</b>
+{% block content %}
 <form action="" method="post" novalidate>
     <p>{{ form.premise_field.label }} {{ form.premise_field(size=32) }}</p>
-    {{ form.submit() }}
-</form>
-<form action="" method="post" novalidate>
     <p>
         {{ form.hypothesis_field.label }} {{ form.hypothesis_field(size=32) }}
     </p>

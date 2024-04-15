@@ -16,8 +16,8 @@ import os
 def write_default_config(path):
 	w = open(path, 'wt')
 	w.write('[data]\n')
-	w.write('url = https://www.dropbox.com/s/o0nxd8pnwy809u2/headlines.csv?dl=1\n')
-	w.write('file = %s%s%s\n' % (nlp_path, os.path.sep, 'headlines.csv'))
+	w.write('url = https://drive.google.com/drive/folders/1gF0E9E8w1x-yz5FvxS8zFZlSNIivYfhT/train.csv\n')
+	w.write('file = %s%s%s\n' % (nlp_path, os.path.sep, 'train.csv'))
 	w.close()
 
 # Find NLP_HOME path

@@ -14,11 +14,11 @@ import os
 # such as where data will be downloaded from.
 # here is an example.
 def write_default_config(path):
-	w = open(path, 'wt')
-	w.write('[data]\n')
-	w.write('url = https://drive.google.com/drive/folders/1gF0E9E8w1x-yz5FvxS8zFZlSNIivYfhT/train.csv\n')
-	w.write('file = %s%s%s\n' % (nlp_path, os.path.sep, 'train.csv'))
-	w.close()
+    with open(path, 'wt') as w:
+        w.write('[data]\n')
+        w.write('url = https://www.dropbox.com/scl/fi/8afm3cbr1ui1j3qrtv1u9/train.csv?rlkey=d0y73zduv1ira37d5xyd0sg2m&st=tfkqctcq&dl=1\n')  # Corrected URL
+        w.write('file = %s%s%s\n' % (os.path.dirname(path), os.path.sep, 'nli.csv'))  # Corrected 'file' option
+
 
 # Find NLP_HOME path
 if 'NLP_HOME' in os.environ:

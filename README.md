@@ -37,7 +37,31 @@ This project aims to build an interactive web application that allows users to i
 ### Installation
 
 1. **Clone the repository**
+
     ```bash
     git clone https://github.com/your-repository/nli-classifier.git
     cd nli-classifier
     ```
+
+2. **Set Up Virtual Environment**
+    ```bash
+    python -m venv venv
+    source venv/bin/activate
+    ```
+    For Windows:
+    ```bash
+    venv\Scripts\activate
+    ```
+3. **Install Dependencies**
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4. **Run the Application**
+
+    ```bash
+    flask run
+    ```
+
+    Navigate to `http://127.0.0.1:5000/` in your web browser to access the application.

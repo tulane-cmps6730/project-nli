@@ -1,34 +1,75 @@
+<!DOCTYPE html>
 <html>
     <head>
-      {% if title %}
-      <title>{{ title }} - nlp</title>
-      {% else %}
-      <title>nlp</title>
-      {% endif %}
-      <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+        {% if title %}
+        <title>{{ title }} - NLP</title>
+        {% else %}
+        <title>NLP Project</title>
+        {% endif %}
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='main.css') }}"
+        />
     </head>
     <body>
-        <div>my nlp project</div>
-        <hr>
-        {% if form.errors %}
-        {{ form.errors }}
-        {% endif %}
-        
-        {% block content %}{% endblock %}
-        {% if confidence %}
-        <p class="lead my-4" style="color: blue">
-           Prediction = {{ prediction }}  <br> Confidence = {{ confidence }}
-        </p>
-        {% endif %}
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-        <br>
+        <div class="container">
+            <h1>Interactive NLI Classifier</h1>
+            <p class="intro">
+                Natural Language Inference (NLI) is a machine learning task that
+                determines the logical relationship between two text sequences.
+                NLI is pivotal for understanding textual relationships and
+                categorizing them into entailment, contradiction, or neutrality.
+                As undergraduates, our interest in NLI stems from its
+                foundational role in understanding and processing human
+                language, which is critical for applications like fact-checking
+                without a premise.
+            </p>
+            <div class="examples">
+                <p>
+                    For example, the premise “Peter and Shira are at the Tulane
+                    library working on this project”:
+                </p>
+                <ul>
+                    <li>
+                        <strong><em>Entails</em></strong> that Peter and Shira
+                        are students.
+                    </li>
+                    <li>
+                        <strong><em>Contradicts</em></strong> that Peter and
+                        Shira are asleep.
+                    </li>
+                    <li>
+                        <strong><em>Is neutral</em></strong> on whether they are
+                        having fun.
+                    </li>
+                </ul>
+                <p>
+                    ...(we're having fun we promise!) Below, we’ve built an
+                    interface to take in your inputted premise and hypothesis
+                    for our model to classify the relationship between the two.
+                </p>
+            </div>
+            <hr />
+            {% if form.errors %}
+            <div class="errors">
+                {% for field, errors in form.errors.items() %}
+                <div>
+                    <strong>{{ form[field].label }}:</strong>
+                    {% for error in errors %}
+                    <p style="color: red">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %} {% block content %}{% endblock %} {% if prediction and
+            confidence %} {% endif %} {% with messages = get_flashed_messages()
+            %} {% if messages %}
+            <ul class="flashed-messages">
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %} {% endwith %}
+        </div>
     </body>
 </html>

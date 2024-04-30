@@ -1,20 +1,58 @@
 body {
-  margin: 50px;
-  padding: 50px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #444;
-}
-/*
- * Formatting the header area
- */
-header {
-  background-color: #DFB887;
-  height: 35px;
-  width: 100%;
-  opacity: .9;
-  margin-bottom: 10px;
+    font-family: "Arial", sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-label {
-  color: black;
+.container {
+    width: 90%;
+    max-width: 800px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.intro,
+.examples {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.examples ul {
+    list-style-type: none; /* Removes default bullet points */
+    padding-left: 0;
+}
+
+.examples li {
+    margin-bottom: 10px;
+}
+
+.errors p {
+    color: red;
+    font-weight: bold;
+}
+
+.results {
+    margin-top: 20px;
+    background-color: #e9ecef;
+    padding: 10px;
+    border-radius: 5px;
+    color: blue;
+}
+
+.flashed-messages ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.flashed-messages li {
+    margin-top: 10px;
+    color: green;
 }

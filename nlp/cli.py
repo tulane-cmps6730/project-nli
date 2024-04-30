@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Demonstrating a very simple NLP project. Yours should be more exciting than this."""
 import click
-import glob
-import pickle
 import sys
 import os
 
@@ -11,21 +8,42 @@ import numpy as np
 import pandas as pd
 import re
 import requests
+from tqdm import tqdm
+
 
 import torch
 from torch.utils.data import TensorDataset
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, get_linear_schedule_with_warmup
+
+from torch.nn.utils import clip_grad_norm_
+
+from torch.optim import AdamW
 from torch.utils.data import DataLoader, Dataset
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, accuracy_score
 
 from . import clf_path, config, config_path, write_default_config
+
+
 
 model_name = "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForSequenceClassification.from_pretrained(model_name)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
+
+class MNLIDataset(Dataset):
+    def __init__(self, encodings, labels):
+        self.encodings = encodings
+        self.labels = labels
+
+    def __getitem__(self, idx):
+        item = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
+        item['labels'] = torch.tensor(self.labels[idx])
+        return item
+
+    def __len__(self):
+        return len(self.labels)
 
 
 @click.group()
@@ -71,6 +89,7 @@ def dl_data():
     
 def load_and_tokenize_data(file_path):
     df = pd.read_csv(file_path)
+    df = df[:1000]
     print("Columns in CSV:", df.columns)  # Display column names
     print("Number of rows:", len(df))  # Display number of rows
 
@@ -91,38 +110,114 @@ def load_and_tokenize_data(file_path):
     return tokenized_data, labels
 
 def train_model(data_file):
-    tokenized_data, labels = load_and_tokenize_data(data_file)
-    dataset = TensorDataset(tokenized_data['input_ids'], tokenized_data['attention_mask'], labels)
+    # Load and tokenize the data
+    df = pd.read_csv(data_file)
+
+    df['premise'] = df['premise'].astype(str)
+    df['hypothesis'] = df['hypothesis'].astype(str)
+
+    # Tokenize the training and validation data
+    train_encodings = tokenizer(
+        df['premise'].tolist(),
+        df['hypothesis'].tolist(),
+        padding=True,
+        truncation=True,
+        return_tensors="pt"
+    )
+
+    labels = torch.tensor(df['label'].tolist())
+
+    train_encodings, labels = load_and_tokenize_data(data_file)
+    
+    dataset = MNLIDataset(train_encodings, labels)
     train_loader = DataLoader(dataset, batch_size=16, shuffle=True)
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=5e-5)
-    criterion = torch.nn.CrossEntropyLoss()
+    # Training setup
+    epochs = 4
+    optimizer = AdamW(model.parameters(), lr=5e-5)
+    num_training_steps = len(train_loader) * epochs
+    scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=num_training_steps)
+    loss_fn = torch.nn.CrossEntropyLoss()
 
+    # Training loop with gradient clipping and progress bar
+    model.to(device)
     model.train()
-    for epoch in range(3):  # Example: 3 training epochs
-        total_loss = 0
-        for batch in train_loader:
-            inputs, masks, labels = (t.to(device) for t in batch)
-            model.zero_grad()
-            outputs = model(inputs, attention_mask=masks, labels=labels)
-            loss = outputs.loss
-            loss.backward()
-            optimizer.step()
-            total_loss += loss.item()
-        print(f'Epoch {epoch+1}, Loss: {total_loss / len(train_loader)}')
 
+    for epoch in range(epochs):
+        total_loss = 0
+        progress_bar = tqdm(train_loader, desc=f'Epoch {epoch + 1}', leave=False)
+        for batch in progress_bar:
+            batch = {k: v.to(device) for k, v in batch.items()}
+            outputs = model(**batch)
+            loss = outputs.loss if outputs.loss is not None else loss_fn(outputs.logits, batch['labels'])
+            loss.backward()
+
+            # Gradient clipping
+            clip_grad_norm_(model.parameters(), max_norm=1.0)
+
+            optimizer.step()
+            scheduler.step()
+            optimizer.zero_grad()
+
+            total_loss += loss.item()
+            progress_bar.set_postfix(loss=total_loss / len(train_loader))
+
+        print(f'Epoch {epoch + 1}: Average Loss: {total_loss / len(train_loader)}')
+
+    # Save the fine-tuned model and tokenizer
+    save_directory = "models/fine_tuned_nli"
+    os.makedirs(save_directory, exist_ok=True)
+    model.save_pretrained(save_directory)
+    tokenizer.save_pretrained(save_directory)
+
+    print("Training and saving complete.")
 
 
 @main.command('stats')
-#TODO: update stats function for my df
 def stats():
     """
-    Read the data files and print interesting statistics.
+    Read the data files and print insightful statistics.
     """
-    df = data2df()
-    print('%d rows' % len(df))
-    print('label counts:')
-    print(df.partisan.value_counts())    
+    # Reload the configuration to ensure you get the correct data file
+    config.read(config_path) 
+    
+    # Read the data
+    data_file = config.get('data', 'file')
+    df = pd.read_csv(data_file)
+
+    # General statistics
+    row_count = len(df)
+    column_count = len(df.columns)
+
+    print(f"{row_count} rows and {column_count} columns.")
+
+    # Check for missing values
+    missing_info = df.isnull().sum()
+    total_missing = missing_info.sum()
+
+    if total_missing > 0:
+        print("Missing values per column:")
+        print(missing_info)
+    else:
+        print("No missing values detected.")
+
+    # Information about label distribution
+    if 'label' in df.columns:
+        label_counts = df['label'].value_counts()
+        label_dist = label_counts / row_count * 100  # to get percentage
+        print("Label distribution (absolute):")
+        print(label_counts)
+        print("Label distribution (percentage):")
+        print(label_dist)
+    else:
+        print("No 'label' column found in the dataset.")
+
+    # Display some sample data
+    print("Sample rows:")
+    print(df.head(5))  # Show the first 5 rows
+
+    # Basic statistics for numeric columns, if any
+    
 
 @main.command('train')
 def train():

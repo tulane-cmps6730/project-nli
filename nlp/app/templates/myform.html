@@ -1,11 +1,22 @@
-{% extends "base.html" %}
-<b>Interactive NLI classifier</b>
-{% block content %}
-<form action="" method="post" novalidate>
-    <p>{{ form.premise_field.label }} {{ form.premise_field(size=32) }}</p>
-    <p>
-        {{ form.hypothesis_field.label }} {{ form.hypothesis_field(size=32) }}
-    </p>
-    {{ form.submit() }}
-</form>
+{% extends "base.html" %} {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+<div class="container">
+    <form action="" method="post" novalidate class="nli-form">
+        <div class="form-group">
+            <label for="premise">{{ form.premise_field.label }}</label>
+            {{ form.premise_field(size=32, class_='form-control') }}
+        </div>
+        <div class="form-group">
+            <label for="hypothesis">{{ form.hypothesis_field.label }}</label>
+            {{ form.hypothesis_field(size=32, class_='form-control') }}
+        </div>
+        <button type="submit" class="btn">Submit</button>
+    </form>
+    {% if prediction %}
+    <div class="result-box">
+        <p class="result-text">Prediction: <strong>{{ prediction }}</strong></p>
+        <p class="result-text">Confidence: <strong>{{ confidence }}</strong></p>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}

@@ -1,42 +1,43 @@
-# CMPS 6730 Sample Project
+# Natural Language Inference (NLI) Classifier
 
-This repository contains starter code for the final project in CMPS 4730/6730: Natural Language Processing at Tulane University.
+## Introduction to Natural Language Inference (NLI)
 
-The code in this repository will be copied into your team's project repository at the start of class to provide a starting point for your project.
+Natural Language Inference (NLI) is a fundamental task in the field of natural language processing (NLP) that involves determining the logical relationship between a premise and a hypothesis. The relationship can be classified into three categories:
 
-You should edit this file to include a summary of the goals, methods, and conclusions of your project.
+-   **Entailment:** The premise logically entails the hypothesis.
+-   **Contradiction:** The premise contradicts the hypothesis.
+-   **Neutrality:** The premise neither entails nor contradicts the hypothesis.
 
-The structure of the code supports the following:
+NLI plays a critical role in understanding and processing human language, enabling applications such as automated reasoning, text summarization, and information extraction.
 
-- A simple web UI using Flask to support a demo of the project
-- A command-line interface to support running different stages of the project's pipeline
-- The ability to easily reproduce your work on another machine by using virtualenv and providing access to external data sources.
+## Project Overview
 
-### Using this repository
+This project aims to build an interactive web application that allows users to input a premise and a hypothesis. Our NLI model then classifies the relationship between these two text sequences. This application serves as a practical demonstration of NLI's capabilities and its importance in real-world applications like fact-checking and AI-powered decision-making.
 
-- At the start of the course, students will be divided into project teams. Each team will receive a copy of this starter code in a new repository. E.g.:
-https://github.com/tulane-cmps6730/project-alpha
-- Each team member will then clone their team repository to their personal computer to work on their project. E.g.: `git clone https://github.com/tulane-cmps6730/project-alpha`
-- See [GettingStarted.md](GettingStarted.md) for instructions on using the starter code.
+## Features
 
+-   **Interactive Web Interface:** A user-friendly web interface where users can input text sequences.
+-   **Real-time Classification:** Instant classification of the relationship as entailment, contradiction, or neutrality.
+-   **Examples and Guidance:** Embedded examples and guidance on how to phrase premises and hypotheses for effective results.
 
-### Contents
+## Tech Stack
 
-- [docs](docs): template to create slides for project presentations
-- [nlp](nlp): Python project code
-- [notebooks](notebooks): Jupyter notebooks for project development and experimentation
-- [report](report): LaTeX report
-- [tests](tests): unit tests for project code
+-   **Python:** The primary programming language used.
+-   **Flask:** A lightweight WSGI web application framework used to serve the application.
+-   **PyTorch and Transformers:** Used for model training and inference.
+-   **HTML/CSS:** For crafting the web interface.
 
-### Background Resources
+## Getting Started
 
-The following will give you some technical background on the technologies used here:
+### Prerequisites
 
-1. Refresh your Python by completing this online tutorial: <https://www.learnpython.org/> (3 hours)
-2. Create a GitHub account at <https://github.com/>
-3. Setup git by following <https://help.github.com/en/articles/set-up-git> (30 minutes)
-4. Learn git by completing the [Introduction to GitHub](https://lab.github.com/githubtraining/introduction-to-github) tutorial, reading the [git handbook](https://guides.github.com/introduction/git-handbook/), then completing the [Managing merge conflicts](https://lab.github.com/githubtraining/managing-merge-conflicts) tutorial (1 hour).
-5. Install the Python data science stack from <https://www.anaconda.com/distribution/> . **We will use Python 3** (30 minutes)
-6. Complete the scikit-learn tutorial from <https://www.datacamp.com/community/tutorials/machine-learning-python> (2 hours)
-7. Understand how python packages work by going through the [Python Packaging User Guide](https://packaging.python.org/tutorials/) (you can skip the "Creating Documentation" section). (1 hour)
-8. Complete Part 1 of the [Flask tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world), which is the library we will use for making a web demo for your project.
+-   Python 3.8 or above
+-   Pip package manager
+
+### Installation
+
+1. **Clone the repository**
+    ```bash
+    git clone https://github.com/your-repository/nli-classifier.git
+    cd nli-classifier
+    ```

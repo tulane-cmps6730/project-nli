@@ -65,3 +65,27 @@ This project aims to build an interactive web application that allows users to i
     ```
 
     Navigate to `http://127.0.0.1:5000/` in your web browser to access the application.
+
+**Alternatively, use the command-line interface (CLI) for specific tasks:**
+
+### Training the Model
+
+To download the MNLI dataset and train the NLI model, run the following commands:
+
+```bash
+nlp dl-data
+nlp train
+```
+
+### To explore the Model
+
+```bash
+nlp predict "premise sentence" "hypothesis sentence"
+nlp stats
+```
+
+### To launch the Web Application
+
+```bash
+nlp web
+```
